@@ -1,5 +1,6 @@
 package lankydan.tutorial.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -18,6 +19,7 @@ import javax.jms.ConnectionFactory;
 
 //import org.omg.PortableInterceptor.ACTIVE;
 
+@Slf4j
 @EnableJms
 @ComponentScan(basePackages = "lankydan.tutorial")
 @EnableMongoRepositories(basePackages = "lankydan.tutorial")
@@ -40,12 +42,12 @@ public class Application {
                 new ErrorHandler() {
                     @Override
                     public void handleError(Throwable t) {
-                        System.err.println("An error has occurred in the transaction");
+                        log.error("An error has occurred in the transaction {}", t.toString());
                     }
                 });
 
         // lambda function
-        factory.setErrorHandler(t -> System.out.println("An error has occurred in the transaction"));
+        factory.setErrorHandler(t -> log.error("An error has occurred in the transaction {}", t.toString()));
 
         configurer.configure(factory, connectionFactory);
         return factory;
